@@ -1,0 +1,17 @@
+# 配置文件（含密码，不提交）
+srun_config.json
+
+# 日志文件
+srun_login.log
+srun_login.log.old
+
+# 网卡备份（本地系统信息）
+metric_backup.json
+dhcp_gateway_backup.json
+
+# Python
+__pycache__/
+*.pyc
+
+# 临时文件
+fetch_portal.py
