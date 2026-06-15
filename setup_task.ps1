@@ -26,7 +26,7 @@ if (-not (Test-Path $Wrapper)) {
 
 # 动作：用 PowerShell 运行包装器（自动加路由 + 启动 Python）
 $Action = New-ScheduledTaskAction `
-    -Execute "pwsh.exe" `
+    -Execute "powershell.exe" `
     -Argument "-NoProfile -WindowStyle Hidden -File `"$Wrapper`"" `
     -WorkingDirectory $WorkDir
 
@@ -39,7 +39,7 @@ $T2 = New-ScheduledTaskTrigger -AtStartup -RandomDelay (New-TimeSpan -Minutes 2)
 # 触发器3: 每 10 分钟兜底（防脚本异常退出）
 $T3 = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) `
     -RepetitionInterval (New-TimeSpan -Minutes 10) `
-    -RepetitionDuration ([System.TimeSpan]::MaxValue)
+    -RepetitionDuration (New-TimeSpan -Days 3650)
 
 $Settings = New-ScheduledTaskSettingsSet `
     -AllowStartIfOnBatteries `
