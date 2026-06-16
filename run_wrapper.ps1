@@ -2,6 +2,20 @@
 # 先加路由，再启动 Python 守护
 # 以管理员权限运行（由计划任务调用）
 
+$scriptPath = Join-Path $PSScriptRoot "srun_auto_login.py"
+
+# 0) 进程互斥：如果已有实例在运行则直接退出
+$existing = Get-CimInstance Win32_Process -Filter "Name='pythonw.exe'" -ErrorAction SilentlyContinue |
+    Where-Object { $_.CommandLine -match [regex]::Escape($scriptPath) }
+if ($existing) {
+    exit 0
+}
+$existingPy = Get-CimInstance Win32_Process -Filter "Name='python.exe'" -ErrorAction SilentlyContinue |
+    Where-Object { $_.CommandLine -match [regex]::Escape($scriptPath) }
+if ($existingPy) {
+    exit 0
+}
+
 # 匹配有线网卡名（中英文）
 $wiredPattern = "以太网|Ethernet"
 
@@ -31,6 +45,5 @@ $pythonPath = (Get-Command pythonw -ErrorAction SilentlyContinue).Source
 if (-not $pythonPath) {
     $pythonPath = (Get-Command python -ErrorAction SilentlyContinue).Source
 }
-$scriptPath = Join-Path $PSScriptRoot "srun_auto_login.py"
 
 & $pythonPath $scriptPath

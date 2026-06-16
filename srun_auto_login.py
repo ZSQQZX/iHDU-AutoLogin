@@ -385,6 +385,10 @@ def do_login(cfg: dict) -> str:
         log(f"获取 challenge 失败: {e}")
         return "fail"
 
+    # speed_limit_error 说明请求过频，通常是因为已在线，当成已在线处理
+    if "speed_limit_error" in raw:
+        return "already"
+
     # 解析 JSONP 或纯 JSON
     token = _parse_challenge(raw)
     if not token:
